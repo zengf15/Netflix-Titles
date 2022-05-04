@@ -57,7 +57,8 @@ netflix_titles %>%
 
 ![](Netflix_files/figure-gfm/year-1.png)<!-- -->
 
-What are the most prolific countries? Below are the top 10.
+What are the most prolific countries? Below are the top 10. US is
+followed by India and UK.
 
 ``` r
 Top10 <- netflix_titles %>%
@@ -66,9 +67,30 @@ Top10 <- netflix_titles %>%
   arrange(desc(n)) %>%
   slice(1:10) 
 Top10 %>%
-  ggplot(aes(x=reorder(country,-n),y=n,fill=country)) +
+  ggplot(aes(y=reorder(country,n),x=n,fill=country)) +
   geom_col() +
-  labs(x="country",y="production")
+  labs(y="country",x="production")
 ```
 
 ![](Netflix_files/figure-gfm/country-1.png)<!-- -->
+
+Breaking up into types, Japan and South Korea have significantly more TV
+shows than movies. UK is about half and half. Other countries have
+significantly more movies than TV shows, with India the most prominent
+followed by Egypt. Another analytic article suggests that this might be
+the result of market research that Netflix did in different countries.
+e.g., India has a renown film industry (Bollywood).
+
+``` r
+netflix_titles %>%
+  filter(country == "United States" | country == "India" | country == "United Kingdom" | country == "Japan" | country == "South Korea" | country == "Canada" | country == "Spain" | country == "France" | country == "Egypt" | country == "Mexico") %>%
+  ggplot(aes(y=factor(country,level=c("United States", "India", "United Kingdom", "Japan", "South Korea", "Canada", "Spain", "France", "Egypt", "Mexico")),fill=type)) +
+  geom_bar(position="fill") +
+  labs(y="country",x="production") +
+  scale_y_discrete(limits=rev)
+```
+
+![](Netflix_files/figure-gfm/top10-1.png)<!-- -->
+
+This is a very interesting dataset! I have learned more about Netflix’s
+production in different parts of the world.
