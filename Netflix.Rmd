@@ -1,0 +1,58 @@
+---
+title: "Netflix"
+author: "Fanyi Zeng"
+date: '2022-05-03'
+output: github_document
+---
+
+```{r data}
+netflix_titles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-04-20/netflix_titles.csv')
+```
+
+```{r pkg}
+library(tidyverse)
+```
+
+Let's take a look at the trend of movies and tv shows. We can see that both movies and TV shows are increasing. Since 2020, however, there is a sudden drop in production due to the COVID pandemic. 
+
+```{r trend}
+netflix_titles %>%
+  ggplot(aes(x=release_year, fill=type)) +
+  geom_bar()
+```
+
+Although historically movies have been more dominant than TV shows, in recent years Netflix seems to focus more on TV shows.
+
+```{r year}
+netflix_titles %>%
+  filter(release_year >= 1975) %>%
+  ggplot(aes(y=release_year, fill=type)) +
+  geom_bar(position="fill")
+```
+
+What are the most prolific countries? Below are the top 10. US is followed by India and UK.
+
+```{r country}
+Top10 <- netflix_titles %>%
+  filter(country!="NA") %>%
+  count(country) %>%
+  arrange(desc(n)) %>%
+  slice(1:10) 
+Top10 %>%
+  ggplot(aes(y=reorder(country,n),x=n,fill=country)) +
+  geom_col() +
+  labs(y="country",x="production")
+```
+
+Breaking up into types, Japan and South Korea have significantly more TV shows than movies. UK is about half and half. Other countries have significantly more movies than TV shows, with India the most prominent followed by Egypt. Another analytic article suggests that this might be the result of market research that Netflix did in different countries. e.g., India has a renown film industry (Bollywood).
+
+```{r top10}
+netflix_titles %>%
+  filter(country == "United States" | country == "India" | country == "United Kingdom" | country == "Japan" | country == "South Korea" | country == "Canada" | country == "Spain" | country == "France" | country == "Egypt" | country == "Mexico") %>%
+  ggplot(aes(y=factor(country,level=c("United States", "India", "United Kingdom", "Japan", "South Korea", "Canada", "Spain", "France", "Egypt", "Mexico")),fill=type)) +
+  geom_bar(position="fill") +
+  labs(y="country",x="production") +
+  scale_y_discrete(limits=rev)
+```
+
+This is a very interesting dataset! I have learned more about Netflix's production in different parts of the world.
